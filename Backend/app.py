@@ -29,4 +29,4 @@ def predict():
     return jsonify({'exercise': prediction_exercise, 'diet': prediction_diet})
 
 if __name__ == '__main__':
-    app.run(debug=True)  
+    app.run(debug=True, port=5000)  
