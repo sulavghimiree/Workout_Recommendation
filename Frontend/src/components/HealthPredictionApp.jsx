@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Info } from "lucide-react";
+import { Info, ChevronDown, ChevronUp } from "lucide-react";
 
 const HealthPredictionApp = () => {
   const [step, setStep] = useState("input");
@@ -20,25 +20,170 @@ const HealthPredictionApp = () => {
   const [predictions, setPredictions] = useState(null);
   const [errors, setErrors] = useState({});
 
+  const [expandedSections, setExpandedSections] = useState({
+    vegetables: false,
+    protein: false,
+    beverages: false,
+    schedule: false,
+    benefits: false,
+    tips: false,
+  });
+
+  const toggleSection = (section) => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+  };
+
   const dietRecommendations = {
-    0: "Vegetables: (Broccoli, Carrots, Spinach, Lettuce, Onion); Protein Intake: (Cheese, Cattoge cheese, Skim Milk, Law fat Milk, and Baru Nuts); Juice: (Fruit Juice, Aloe vera juice, Cold-pressed juice, and Watermelon juice)",
-    1: "Vegetables: (Carrots, Sweet Potato, Lettuce); Protein Intake: (Red meats, poultry, fish, eggs, dairy products, legumes, and nuts); Juice: (Fruit juice, watermelon juice, carrot juice, apple juice and mango juice)",
-    2: "Vegetables: (Carrots, Sweet Potato, and Lettuce); Protein Intake: (Red meats, poultry, fish, eggs, dairy products, legumes, and nuts); Juice: (Fruit juice, watermelon juice, carrot juice, apple juice and mango juice)",
-    3: "Vegetables: (Garlic, Mushroom, Green Papper, Icebetg Lettuce); Protein Intake: (Baru Nuts, Beech Nuts, Hemp Seeds, Cheese Spandwich); Juice: (Apple Juice, Mango juice,and Beetroot juice)",
-    4: "Vegetables: (Garlic, Roma Tomatoes, Capers and Iceberg Lettuce); Protein Intake: (Cheese Standwish, Baru Nuts, Beech Nuts, Squash Seeds, and Mixed Teff); Juice: (Apple juice, beetroot juice and mango juice)",
-    5: "Vegetables: (Garlic, Roma Tomatoes, Capers, Green Papper, and Iceberg Lettuce); Protein Intake: (Cheese Sandwich, Baru Nuts, Beech Nuts, Squash Seeds, Mixed Teff, peanut butter, and jelly sandwich); Juice: (Apple juice, beetroot juice, and mango juice)",
-    6: "Vegetables: (Garlic, mushroom, green papper and water chestnut);Protein Intake: ( Baru Nuts, Beech Nuts, and black walnut); Juice : (Apple juice, Mango, and Beetroot Juice)",
-    7: "Vegetables: (Garlic, mushroom, green papper);Protein Intake: ( Baru Nuts, Beech Nuts, and Hemp Seeds); Juice : (Apple juice, Mango, and Beetroot Juice)",
-    8: "Vegetables: (Mixed greens, cherry tomatoes, cucumbers, bell peppers, carrots, celery, bell peppers);Protein Intake: (Chicken, fish, tofu, or legumes); Juice : (Green juice,kale, spinach, cucumber, celery, and apple)",
-    9: "Vegetables: (Tomatoes, Garlic, leafy greens, broccoli, carrots, and bell peppers); Protein Intake: (poultry, fish, tofu, legumes, and low-fat dairy products); Juice: (Apple juice, beetroot juice and mango juice)",
+    0: {
+      Vegetables: ["Broccoli", "Carrots", "Spinach", "Lettuce", "Onion"],
+      Protein: [
+        "Cheese",
+        "Cottage cheese",
+        "Skim Milk",
+        "Low-fat Milk",
+        "Baru Nuts",
+      ],
+      Juice: [
+        "Fruit Juice",
+        "Aloe vera juice",
+        "Cold-pressed juice",
+        "Watermelon juice",
+      ],
+    },
+    1: {
+      Vegetables: ["Carrots", "Sweet Potato", "Lettuce"],
+      Protein: [
+        "Red meats",
+        "Poultry",
+        "Fish",
+        "Eggs",
+        "Dairy products",
+        "Legumes",
+        "Nuts",
+      ],
+      Juice: [
+        "Fruit juice",
+        "Watermelon juice",
+        "Carrot juice",
+        "Apple juice",
+        "Mango juice",
+      ],
+    },
+    2: {
+      Vegetables: ["Carrots", "Sweet Potato", "Lettuce"],
+      Protein: [
+        "Red meats",
+        "Poultry",
+        "Fish",
+        "Eggs",
+        "Dairy products",
+        "Legumes",
+        "Nuts",
+      ],
+      Juice: [
+        "Fruit juice",
+        "Watermelon juice",
+        "Carrot juice",
+        "Apple juice",
+        "Mango juice",
+      ],
+    },
+    3: {
+      Vegetables: ["Garlic", "Mushroom", "Green Pepper", "Iceberg Lettuce"],
+      Protein: ["Baru Nuts", "Beech Nuts", "Hemp Seeds", "Cheese Sandwich"],
+      Juice: ["Apple juice", "Mango juice", "Beetroot juice"],
+    },
+    4: {
+      Vegetables: ["Garlic", "Roma Tomatoes", "Capers", "Iceberg Lettuce"],
+      Protein: [
+        "Cheese Sandwich",
+        "Baru Nuts",
+        "Beech Nuts",
+        "Squash Seeds",
+        "Mixed Teff",
+      ],
+      Juice: ["Apple juice", "Beetroot juice", "Mango juice"],
+    },
+    5: {
+      Vegetables: [
+        "Garlic",
+        "Roma Tomatoes",
+        "Capers",
+        "Green Pepper",
+        "Iceberg Lettuce",
+      ],
+      Protein: [
+        "Cheese Sandwich",
+        "Baru Nuts",
+        "Beech Nuts",
+        "Squash Seeds",
+        "Mixed Teff",
+        "Peanut butter",
+        "Jelly sandwich",
+      ],
+      Juice: ["Apple juice", "Beetroot juice", "Mango juice"],
+    },
+    6: {
+      Vegetables: ["Garlic", "Mushroom", "Green Pepper", "Water Chestnut"],
+      Protein: ["Baru Nuts", "Beech Nuts", "Black Walnut"],
+      Juice: ["Apple juice", "Mango juice", "Beetroot juice"],
+    },
+    7: {
+      Vegetables: ["Garlic", "Mushroom", "Green Pepper"],
+      Protein: ["Baru Nuts", "Beech Nuts", "Hemp Seeds"],
+      Juice: ["Apple juice", "Mango juice", "Beetroot juice"],
+    },
+    8: {
+      Vegetables: [
+        "Mixed greens",
+        "Cherry tomatoes",
+        "Cucumbers",
+        "Bell peppers",
+        "Carrots",
+        "Celery",
+      ],
+      Protein: ["Chicken", "Fish", "Tofu", "Legumes"],
+      Juice: ["Green juice", "Kale", "Spinach", "Cucumber", "Celery", "Apple"],
+    },
+    9: {
+      Vegetables: [
+        "Tomatoes",
+        "Garlic",
+        "Leafy greens",
+        "Broccoli",
+        "Carrots",
+        "Bell peppers",
+      ],
+      Protein: ["Poultry", "Fish", "Tofu", "Legumes", "Low-fat dairy products"],
+      Juice: ["Apple juice", "Beetroot juice", "Mango juice"],
+    },
   };
 
   const exerciseRecommendations = {
-    0: "Brisk walking, cycling, swimming, running , or dancing",
-    1: "Squats, deadlifts, bench presses, and overhead presses",
-    2: "Squats, yoga, deadlifts, bench presses, and overhead presses",
-    3: "Walking, Yoga, Swimming",
-    4: "Brisk walking, cycling, swimming, or dancing",
+    0: {
+      Exercises: ["Brisk walking", "Cycling", "Swimming", "Running", "Dancing"],
+    },
+    1: {
+      Exercises: ["Squats", "Deadlifts", "Bench presses", "Overhead presses"],
+    },
+    2: {
+      Exercises: [
+        "Squats",
+        "Yoga",
+        "Deadlifts",
+        "Bench presses",
+        "Overhead presses",
+      ],
+    },
+    3: {
+      Exercises: ["Walking", "Yoga", "Swimming"],
+    },
+    4: {
+      Exercises: ["Brisk walking", "Cycling", "Swimming", "Dancing"],
+    },
   };
 
   const validateForm = () => {
@@ -118,7 +263,7 @@ const HealthPredictionApp = () => {
                 diet: responseData.diet,
                 exercise: responseData.exercise,
               }),
-            1000
+            100
           )
         );
         setPredictions(response);
@@ -128,6 +273,33 @@ const HealthPredictionApp = () => {
       }
     }
   };
+
+  const renderExpandableSection = (title, items, section) => (
+    <div className="border rounded-lg mb-4 overflow-hidden">
+      <button
+        onClick={() => toggleSection(section)}
+        className="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors"
+      >
+        <span className="font-semibold text-gray-700">{title}</span>
+        {expandedSections[section] ? (
+          <ChevronUp className="h-5 w-5" />
+        ) : (
+          <ChevronDown className="h-5 w-5" />
+        )}
+      </button>
+      {expandedSections[section] && (
+        <div className="p-4 bg-white">
+          <ul className="list-disc list-inside space-y-2">
+            {items.map((item, index) => (
+              <li key={index} className="text-gray-600">
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
 
   const renderTooltip = (text) => (
     <div className="group relative inline-block ml-2">
@@ -268,34 +440,58 @@ const HealthPredictionApp = () => {
             <Card className="mt-8">
               <CardHeader>
                 <CardTitle className="text-2xl text-center text-gray-800">
-                  Your Personalized Recommendations
+                  Your Personalized Health Plan
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-8">
                 <div className="space-y-4">
-                  <h3 className="text-xl font-semibold text-gray-700">
-                    Recommended Diet Plan
+                  <h3 className="text-xl font-semibold text-gray-700 border-b pb-2">
+                    Recommended Diet Plan:
                   </h3>
-                  <div className="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                    <p className="text-lg text-gray-800">
-                      {dietRecommendations[predictions.diet]}
-                    </p>
-                  </div>
+
+                  {renderExpandableSection(
+                    "Recommended Vegetables",
+                    dietRecommendations[predictions.diet].Vegetables,
+                    "vegetables"
+                  )}
+
+                  {renderExpandableSection(
+                    "Protein Sources",
+                    dietRecommendations[predictions.diet].Protein,
+                    "protein"
+                  )}
+
+                  {renderExpandableSection(
+                    "Juice",
+                    dietRecommendations[predictions.diet].Juice,
+                    "beverages"
+                  )}
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-xl font-semibold text-gray-700">
-                    Recommended Exercise Plan
+                  <h3 className="text-xl font-semibold text-gray-700 border-b pb-2">
+                    Exercise Plan:
                   </h3>
-                  <div className="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                    <p className="text-lg text-gray-800">
-                      {exerciseRecommendations[predictions.exercise]}
-                    </p>
-                  </div>
+
+                  {renderExpandableSection(
+                    "Daily Schedule",
+                    exerciseRecommendations[predictions.exercise].Exercises,
+                    "schedule"
+                  )}
                 </div>
 
                 <Button
-                  onClick={() => setStep("input")}
+                  onClick={() => {
+                    setStep("input");
+                    setExpandedSections({
+                      vegetables: false,
+                      protein: false,
+                      beverages: false,
+                      schedule: false,
+                      benefits: false,
+                      tips: false,
+                    });
+                  }}
                   className="w-full bg-blue-600 hover:bg-blue-700"
                 >
                   Start Over
