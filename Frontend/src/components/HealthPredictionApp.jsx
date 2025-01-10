@@ -50,7 +50,7 @@ const HealthPredictionApp = () => {
       newErrors.weight = "Weight must be between 30 and 300 kg";
     }
     if (!formData.height || formData.height < 120 || formData.height > 250) {
-      newErrors.height = "Height must be between 120 and 250 m";
+      newErrors.height = "Height must be between 120 and 250 cm";
     }
     if (!formData.sex) {
       newErrors.sex = "Please select your sex";
