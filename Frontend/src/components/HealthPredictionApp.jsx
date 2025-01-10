@@ -50,7 +50,7 @@ const HealthPredictionApp = () => {
       newErrors.weight = "Weight must be between 30 and 300 kg";
     }
     if (!formData.height || formData.height < 120 || formData.height > 250) {
-      newErrors.height = "Height must be between 120 and 250 cm";
+      newErrors.height = "Height must be between 120 and 250 m";
     }
     if (!formData.sex) {
       newErrors.sex = "Please select your sex";
@@ -61,35 +61,46 @@ const HealthPredictionApp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let form = {};
+    let sex;
+    let diabetes;
+    let hypertension;
     const url = "https://workout-recommendation.onrender.com/predict";
     if (validateForm()) {
       try {
         if (formData.sex === "male") {
-          formData.sex = 1;
+          sex = 1;
         } else {
-          formData.sex = 0;
+          sex = 0;
         }
 
         if (formData.diabetes === true) {
-          formData.diabetes = 1;
+          diabetes = 1;
         } else {
-          formData.diabetes = 0;
+          diabetes = 0;
         }
 
         if (formData.hypertension === true) {
-          formData.hypertension = 1;
+          hypertension = 1;
         } else {
-          formData.hypertension = 0;
+          hypertension = 0;
         }
 
-        formData.weight = formData.weight / 100;
+        form = {
+          age: formData.age,
+          weight: formData.weight,
+          height: formData.height / 100,
+          sex: sex,
+          diabetes: diabetes,
+          hypertension: hypertension,
+        };
 
         const ressponse = await fetch(url, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(form),
         });
 
         if (!ressponse.ok) {
@@ -104,8 +115,8 @@ const HealthPredictionApp = () => {
           setTimeout(
             () =>
               resolve({
-                diet: Math.floor(Math.random() * 10),
-                exercise: Math.floor(Math.random() * 5),
+                diet: responseData.diet,
+                exercise: responseData.exercise,
               }),
             1000
           )
